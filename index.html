@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片懒加载</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .clearfix::after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+        img {
+            float: left;
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="img-container clearfix">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/1.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/2.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/3.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/4.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/5.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/6.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/7.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/8.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/9.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/10.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/11.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/12.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/13.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/14.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/15.jpg">
+        <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/16.jpg">
+    </div>
+</body>
+<script>
+    // 判断图片是不是到可视区
+    // 是加载，改值
+    $('img').on('load', function() {
+        handle($(this));
+    })
+    $(window).on('scroll', function() {
+        console.log('fuck')
+//        $('img').not('[data-loaded]').each(function() {
+//            var $this = $(this);
+//            console.log(6666, isScrollToView($this, $(window)), $this.index());
+//            handle($(this));
+//        })
+    })
+    function handle($this) {
+        if(isScrollToView($this, $(window))) {
+            //loadImg($this);
+            console.log($this)
+        }
+    }
+
+    function isScrollToView($ele, $parentEle) {
+        console.log('parentEle.scrollTop', $parentEle.scrollTop());
+        console.log('parentEle.offsetHeight', $parentEle.height());
+        console.log('ele.offsetTop', $ele.offset().top);
+        return $ele.offset().top <= ($parentEle.scrollTop() + $parentEle.height());
+    }
+
+    function loadImg($ele) {
+        $ele.attr('src', $ele.attr('data-src'));
+        $ele.attr('data-loaded', true); // 已经加载的图片不需要在loadImg，以减少请求
+    }
+</script>
+</html>
