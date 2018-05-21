@@ -17,9 +17,17 @@
             display: block;
             clear: both;
         }
+        .img-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
         img {
             float: left;
             width: 50%;
+        }
+        .loading {
+            background-color: forestgreen;
+            height: 10px;
         }
     </style>
 </head>
@@ -41,39 +49,48 @@
         <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/14.jpg">
         <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/15.jpg">
         <img src="http://smashinghub.com/wp-content/uploads/2014/08/cool-loading-animated-gif-3.gif" data-src="http://cdn.jirengu.com/book.jirengu.com/img/16.jpg">
+        <div class="loading"></div>
     </div>
 </body>
 <script>
-    // 判断图片是不是到可视区
-    // 是加载，改值
-    $('img').on('load', function() {
-        handle($(this));
-    })
-    $(window).on('scroll', function() {
-        console.log('fuck')
-//        $('img').not('[data-loaded]').each(function() {
-//            var $this = $(this);
-//            console.log(6666, isScrollToView($this, $(window)), $this.index());
-//            handle($(this));
-//        })
-    })
-    function handle($this) {
-        if(isScrollToView($this, $(window))) {
-            //loadImg($this);
-            console.log($this)
+    // 判定第一张是否在可视区域，是判断下一张，否则停止判断
+    // 滚动的时候重复上述操作
+    judgeNextImg($('img').not('[data-loaded]').eq(0));
+
+    $(window).on('scroll', throttle(function() {
+        judgeNextImg($('img').not('[data-loaded]').eq(0));
+    }, 300))
+
+    function judgeNextImg($node) {
+        if($node.length && isScrollToView($node, $(window))) {
+            loadImg($node);
+            $node.load(function() {
+                judgeNextImg($('img').not('[data-loaded]').eq(0));
+            })
         }
     }
 
-    function isScrollToView($ele, $parentEle) {
-        console.log('parentEle.scrollTop', $parentEle.scrollTop());
-        console.log('parentEle.offsetHeight', $parentEle.height());
-        console.log('ele.offsetTop', $ele.offset().top);
-        return $ele.offset().top <= ($parentEle.scrollTop() + $parentEle.height());
+    function isScrollToView($node, $parent) {
+        return $node.offset().top <= ($parent.scrollTop() + $parent.height());
     }
 
     function loadImg($ele) {
         $ele.attr('src', $ele.attr('data-src'));
         $ele.attr('data-loaded', true); // 已经加载的图片不需要在loadImg，以减少请求
+    }
+
+    function throttle(fn, delay) {
+        var isHandleFinished = true;
+        return function() {
+            if(isHandleFinished===false) {return}
+            var _this = this,
+                args = arguments;
+            isHandleFinished = false;
+            setTimeout(function () {
+                fn.apply(_this, args);
+                isHandleFinished = true;
+            }, delay);
+        }
     }
 </script>
 </html>
